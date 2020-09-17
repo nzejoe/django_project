@@ -1,4 +1,4 @@
-from django.test import SimpleTestCase
+from django.test import SimpleTestCase, TestCase
 from django.urls import reverse, resolve
 from . views import HomepageView
 
@@ -27,3 +27,5 @@ class HomepageTests(SimpleTestCase):
             view.func.__name__,
             HomepageView.as_view().__name__
         )
+
+
