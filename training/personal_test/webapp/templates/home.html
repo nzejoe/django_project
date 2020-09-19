@@ -1,5 +1,7 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block content %}
-    <p>Hello</p>
+    <img class="cover" src="{% static 'images/power.jpg' %}">
+    <p class="welcome">Hello</p>
 {% endblock content %}
