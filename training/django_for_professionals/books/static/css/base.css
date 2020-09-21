@@ -1,8 +1,12 @@
 h1{
-    color: red
+    color: red;
 }
 
 .bookcover{
     height: 300px;
     width: auto;
+}
+
+h2{
+    color: darkred;
 }

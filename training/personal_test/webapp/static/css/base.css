@@ -1,5 +1,5 @@
 h1{
-    color: darkred;
+    color: red;
 }
 
 .welcome{
@@ -9,4 +9,8 @@ h1{
 .cover{
     width: 300px;
     height: auto;
+}
+
+h2{
+    color: darkred;
 }
