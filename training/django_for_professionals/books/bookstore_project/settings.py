@@ -15,7 +15,8 @@ from environ import Env
 
 env = Env(
     DEBUG = (bool, False),
-    SECRET_KEY = (str, 'none')
+    SECRET_KEY = (str, 'none'),
+    SENDGRID_API_KEY = (str, 'none')
 )
 
 # Read environ file
@@ -164,10 +165,18 @@ AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 # Configure allauth for email login method instead of username
 ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
+DEFAULT_FROM_EMAIL = 'admin@djangobookstore.com'
+
+# SendGrid Mailing settings
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_HOST = 'smtp.sendgrid.net'
+EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
+EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY')
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
