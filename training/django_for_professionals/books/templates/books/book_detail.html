@@ -8,4 +8,16 @@
         <p>Author: {{ book.author }}</p>
         <p>Price: {{ book.price }}</p>
     </div>
+    <div>
+        <h3>Reviews ({{ book.reviews.all.count }})</h3>
+        {% if book.reviews.all %}
+            <ul>
+                {% for review in book.reviews.all %}
+                    <li>{{ review.review }} ({{ review.author }})</li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No reviews for this book yet.</p>
+        {% endif %}
+    </div>
 {% endblock content %}

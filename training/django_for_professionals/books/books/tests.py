@@ -19,6 +19,13 @@ class BookTest(TestCase):
             author= 'James',
             price= 34.00
         )
+
+        # create review for book
+        self.review = Review.objects.create(
+            book=self.book,
+            author=self.user,
+            review='One of the best book I have read so far.',
+        )
         # create book_list view
         book_list_url = reverse('book_list')
         self.book_list_response = self.client.get(book_list_url)
@@ -31,12 +38,6 @@ class BookTest(TestCase):
         self.non_url = '/books/237hee4/'
         self.non_url_response = self.client.get(self.non_url)
 
-        # create review for book
-        self.review = Review.objects.create(
-            book= self.book,
-            author= self.user,
-            review= 'One of the best book I have read so far.',
-        )
 
     def test_user_creation(self):
         self.assertEqual(self.user.username, 'joe')
@@ -58,3 +59,4 @@ class BookTest(TestCase):
 
     def test_non_url_view(self):
         self.assertEqual(self.non_url_response.status_code, 404)
+
