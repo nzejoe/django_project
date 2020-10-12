@@ -1,62 +1,60 @@
+from django.contrib.auth.models import Permission
 from django.test import TestCase
-from django.urls import reverse
-from django.contrib.auth import get_user_model
 from .models import Book, Review
+from django.contrib.auth import get_user_model
+from django.urls import reverse
+
 
 class BookTest(TestCase):
 
     def setUp(self):
-        # create user
         User = get_user_model()
         self.user = User.objects.create_user(
-            username= 'joe',
-            email= 'joe@company.com',
-            password= 'password',
+            username='jayDEV',
+            email='jayDEV@company.com',
+            password='password'
         )
+        # create user permission
+        self.permission = Permission.objects.get(codename='special_status')
+
         # create book object
         self.book = Book.objects.create(
-            title= 'django for professionals',
-            author= 'James',
-            price= 34.00
+            title='neverland',
+            author=self.user,
+            price=43
         )
 
-        # create review for book
+        # write book review
         self.review = Review.objects.create(
             book=self.book,
-            author=self.user,
-            review='One of the best book I have read so far.',
+            review='nice book',
+            author=self.user
         )
-        # create book_list view
-        book_list_url = reverse('book_list')
-        self.book_list_response = self.client.get(book_list_url)
+    def test_book_list_view_with_logged_in_user(self):
+        self.client.login(email='jayDEV@company.com', password='password') # user login
+        url = reverse('book_list')
+        response = self.client.get(url)
 
-        # create book_detail view
-        self.book_url = self.book.get_absolute_url()
-        self.book_detail_response = self.client.get(self.book_url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'neverland')
+        self.assertTemplateUsed(response, 'books/book_list.html')
 
-        # create non_url view
-        self.non_url = '/books/237hee4/'
-        self.non_url_response = self.client.get(self.non_url)
+    def test_book_list_view_for_logged_out_user(self):
+        self.client.logout() # logout user
+        url = reverse('book_list')
+        response = self.client.get(url)
 
+        self.assertEqual(response.status_code, 302)
+        self.assertRedirects(response, '%s?next=/books/' % (reverse('account_login')))
+        response = self.client.get('%s?next=/books/' % (reverse('account_login')))
+        self.assertContains(response, 'Log In')
 
-    def test_user_creation(self):
-        self.assertEqual(self.user.username, 'joe')
-
-    def test_book_create_object(self):
-        self.assertEqual(self.book.title, 'django for professionals')
-        self.assertEqual(self.book.price, 34.00)
-
-    def test_book_list_view(self):
-        self.assertEqual(self.book_list_response.status_code, 200)
-        self.assertTemplateUsed(self.book_list_response, 'books/book_list.html')
-        self.assertContains(self.book_list_response, 'django for professionals')
-
-    def test_book_detail_view(self):
-        self.assertEqual(self.book_detail_response.status_code, 200)
-        self.assertTemplateUsed(self.book_detail_response, 'books/book_detail.html')
-        self.assertContains(self.book_detail_response, 'James')
-        self.assertContains(self.book_detail_response, 'joe')
-
-    def test_non_url_view(self):
-        self.assertEqual(self.non_url_response.status_code, 404)
-
+    def test_user_permitted_book_detail_view(self):
+        self.client.login(email='jayDEV@company.com', password='password')
+        self.user.user_permissions.add(self.permission) # assign special_status permission to user
+        url = self.book.get_absolute_url()
+        response = self.client.get(url)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'jayDEV')
+        self.assertTemplateUsed(response, 'books/book_detail.html')
+        self.assertContains(response, 'nice book') # check for reivie on book detail page vies

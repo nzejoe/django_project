@@ -16,7 +16,9 @@ from environ import Env
 env = Env(
     DEBUG = (bool, False),
     SECRET_KEY = (str, 'none'),
-    SENDGRID_API_KEY = (str, 'none')
+    SENDGRID_API_KEY = (str, 'none'),
+    STRIPE_TEST_PUBLISHABLE_KEY=(str, 'key'),
+    STRIP_TEST_SECRET_KEY=(str, 'secret'),
 )
 
 # Read environ file
@@ -54,6 +56,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'pages',
     'books',
+    'orders',
 
     # 3rd Party Apps
     'crispy_forms',
@@ -183,3 +186,7 @@ EMAIL_HOST_USER = 'apikey' # this is exactly the value 'apikey'
 EMAIL_HOST_PASSWORD = env('SENDGRID_API_KEY')
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+# Stripe
+STRIPE_TEST_PUBLISHABLE_KEY = os.environ.get('STRIPE_TEST_PUBLISHABLE_KEY')
+STRIPE_TEST_SECRET_KEY = os.environ.get('STRIPE_TEST_SECRET_KEY')

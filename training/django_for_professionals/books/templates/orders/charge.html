@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block tilte %}Charge{% endblock tilte %}
+
+{% block content %}
+    <h2>Thank you for your order! You now have access to</h2>
+    <a href="{% url 'book_list' %}">All Books</a>
+{% endblock content %}
