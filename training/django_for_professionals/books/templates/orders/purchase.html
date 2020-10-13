@@ -4,15 +4,20 @@
 
 {% block content %}
     <h1>Orders page</h1>
-    <p>Buy for $39.00</p>
-    <form action="{% url 'charge' %}" method="post">
-        {% csrf_token %}
-        <script
-            src="https://checkout.stripe.com/checkout.js"
-            class="stripe-button"
-            data-key="{{ stripe_key }}"
-            data-amount="3900"
-            data-locale="auto">
-        </script>
-    </form>
+    {% if perms.books.special_status %}
+        <h2>Already purchase! You can <a href="{% url 'book_list' %}">read all books now</a></h2>
+    {% else %}
+        <p>Buy for $39.00</p>
+        <form action="{% url 'charge' %}" method="post">
+            {% csrf_token %}
+            <script
+                src="https://checkout.stripe.com/checkout.js"
+                class="stripe-button"
+                data-description="All Books"
+                data-key="{{ stripe_key }}"
+                data-amount="3900"
+                data-locale="auto">
+            </script>
+        </form>
+    {% endif %}
 {% endblock content %}
